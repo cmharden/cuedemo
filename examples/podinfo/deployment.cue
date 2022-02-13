@@ -10,7 +10,7 @@ resources: podinfo: appsv1.#Deployment & {
 	kind:       "Deployment"
 	metadata:   _config.meta
 	spec:       appsv1.#DeploymentSpec & {
-		if _hpa == true {
+		if _hpa == false {
 			replicas: _config.replicas
 		}
 		selector: matchLabels: app: _config.meta.name
