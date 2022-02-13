@@ -10,6 +10,9 @@ resources: podinfo: appsv1.#Deployment & {
 	kind:       "Deployment"
 	metadata:   _config.meta
 	spec:       appsv1.#DeploymentSpec & {
+		if _hpa == true {
+			replicas: _config.replicas
+		}
 		selector: matchLabels: app: _config.meta.name
 		template: {
 			metadata: labels: app: _config.meta.name
@@ -17,7 +20,11 @@ resources: podinfo: appsv1.#Deployment & {
 				serviceAccountName: resources.serviceaccount.metadata.name
 				containers: [
 					{
-						name:  "podinfo"
+						name: "podinfo"
+						command: [
+							"./podinfo",
+							"--port=\(_config.port)",
+						]
 						image: "\(_config.image):\(_config.tag)"
 						ports: [{
 							containerPort: _config.port
