@@ -12,8 +12,8 @@ cue ls
 Generate the Kubernetes manifests using the following command:
 ```bash
 cue oyaml
-
-We can use the "-t hpa" flag to enable the hpa:
+```
+We can use the `hpa` flag to enable the hpa:
 ```bash
 cue -t hpa ls
 ```
