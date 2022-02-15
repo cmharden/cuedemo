@@ -1,10 +1,11 @@
-package main
+package app
 
 import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-resources: service: corev1.#Service & {
+#Service: corev1.#Service & {
+	_config:    #Config
 	apiVersion: "v1"
 	kind:       "Service"
 	metadata:   _config.meta
@@ -12,10 +13,10 @@ resources: service: corev1.#Service & {
 		type:     "ClusterIP"
 		selector: _config.meta.labels
 		ports: [{
-			port:       _config.port
-			targetPort: "http"
-			protocol:   "TCP"
 			name:       "http"
+			port:       _config.port
+			targetPort: _config.port
+			protocol:   "TCP"
 		}]
 	}
 }

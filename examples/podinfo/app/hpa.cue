@@ -1,11 +1,11 @@
-@if(hpa)
-package main
+package app
 
 import (
 	autoscaling "k8s.io/api/autoscaling/v2beta2"
 )
 
-resources: hpa: autoscaling.#HorizontalPodAutoscaler & {
+#HorizontalPodAutoscaler: autoscaling.#HorizontalPodAutoscaler & {
+	_config:    #Config
 	apiVersion: "autoscaling/v2beta2"
 	kind:       "HorizontalPodAutoscaler"
 	metadata:   _config.meta
