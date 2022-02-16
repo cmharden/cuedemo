@@ -8,8 +8,9 @@ import (
 	"tool/file"
 )
 
-version:   "v0.0.1-alpha.3"
-flux_path: "./examples/podinfo/cluster/"
+version:      "v0.0.1-alpha.4"
+manifest_url: "https://github.com/phoban01/cue-flux-controller/releases/download/\(version)"
+flux_path:    "./examples/podinfo/cluster/"
 
 command: ls: {
 	task: print: cli.Print & {
@@ -58,18 +59,19 @@ command: install: {
 	}
 	install_crds: exec.Run & {
 		$after: mkdir
-		cmd:    "curl -sL -o \(install_path)/crds.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.crds.yaml"
+		cmd: [ "curl", "-sL", "-o", "\(install_path)/crds.yaml", "\(manifest_url)/cue-controller.crds.yaml"]
 	}
 	install_controller: {
 		deploy: exec.Run & {
 			$after: install_crds
-			cmd:    "curl -sL -o \(install_path)/deploy.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.deployment.yaml"
+			cmd: [ "curl", "-sL", "-o", "\(install_path)/deploy.yaml", "\(manifest_url)/cue-controller.deployment.yaml"]
 		}
 		rbac: exec.Run & {
 			$after: install_crds
-			cmd:    "curl -sL -o \(install_path)/rbac.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.rbac.yaml"
+			cmd: [ "curl", "-sL", "-o", "\(install_path)/rbac.yaml", "\(manifest_url)/cue-controller.rbac.yaml"]
 		}
 	}
+	// validate yaml before commit and push
 	diff: exec.Run & {
 		$after: install_controller
 		cmd: ["git", "diff", "--stat", install_path]
