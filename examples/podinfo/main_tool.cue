@@ -8,6 +8,7 @@ import (
 	"tool/file"
 )
 
+version:   "v0.0.1-alpha.3"
 flux_path: "./examples/podinfo/cluster/"
 
 command: ls: {
@@ -51,7 +52,6 @@ command: bootstrap: {
 
 command: install: {
 	install_path: "./cluster/cue-controller"
-	version:      "v0.0.1-alpha.2"
 	verify_flux:  file.Mkdir & {
 		path:          install_path
 		createParents: true
@@ -60,8 +60,14 @@ command: install: {
 		$after: verify_flux
 		cmd:    "curl -sL -o \(install_path)/crds.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.crds.yaml"
 	}
-	install_controller: exec.Run & {
-		$after: install_crds
-		cmd:    "curl -sL -o \(install_path)/controller.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.deployment.yaml"
+	install_controller: {
+		deploy: exec.Run & {
+			$after: install_crds
+			cmd:    "curl -sL -o \(install_path)/deploy.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.deployment.yaml"
+		}
+		rbac: exec.Run & {
+			$after: install_crds
+			cmd:    "curl -sL -o \(install_path)/rbac.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.rbac.yaml"
+		}
 	}
 }
