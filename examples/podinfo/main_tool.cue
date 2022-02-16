@@ -4,6 +4,7 @@ import (
 	"tool/cli"
 	"tool/exec"
 	"encoding/yaml"
+	"encoding/json"
 	"text/tabwriter"
 	"tool/file"
 )
@@ -53,7 +54,7 @@ command: install: {
 	install_path: flux_path + "cue-controller"
 	version:      "v0.0.1-alpha.2"
 	verify_flux:  file.Mkdir & {
-		path:          flux_path
+		path:          install_path
 		createParents: true
 	}
 	install_crds: exec.Run & {
@@ -63,17 +64,5 @@ command: install: {
 	install_controller: exec.Run & {
 		$after: install_crds
 		cmd:    "curl -sL -o \(install_path)/controller.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.deployment.yaml"
-	}
-	add: exec.Run & {
-		$after: install_controller
-		cmd:    "git add \(install_path)"
-	}
-	commit: exec.Run & {
-		$after: add
-		cmd:    "git commit -m '[cuelang] add cue-controller manifests'"
-	}
-	push: exec.Run & {
-		$after: commit
-		cmd:    "git push"
 	}
 }
