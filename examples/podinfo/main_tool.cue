@@ -4,7 +4,6 @@ import (
 	"tool/cli"
 	"tool/exec"
 	"encoding/yaml"
-	"encoding/json"
 	"text/tabwriter"
 	"tool/file"
 )
@@ -51,7 +50,7 @@ command: bootstrap: {
 }
 
 command: install: {
-	install_path: flux_path + "cue-controller"
+	install_path: "./cluster/cue-controller"
 	version:      "v0.0.1-alpha.2"
 	verify_flux:  file.Mkdir & {
 		path:          install_path
