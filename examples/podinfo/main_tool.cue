@@ -70,4 +70,22 @@ command: install: {
 			cmd:    "curl -sL -o \(install_path)/rbac.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.rbac.yaml"
 		}
 	}
+	diff: exec.Run & {
+		$after: install_controller
+		cmd: ["git", "diff", "--stat", install_path]
+		stdout: *"" | string
+	}
+	if diff.stdout != "" {
+		add: exec.Run & {
+			cmd: ["git", "add", install_path]
+		}
+		commit: exec.Run & {
+			$after: add
+			cmd: ["git", "commit", "-m", "cue-controller: install \(version)"]
+		}
+		push: exec.Run & {
+			$after: commit
+			cmd: ["git", "push"]
+		}
+	}
 }
