@@ -8,6 +8,8 @@ import (
 	"tool/file"
 )
 
+flux_path: "cluster/"
+
 command: ls: {
 	task: print: cli.Print & {
 		text: tabwriter.Write([
@@ -32,8 +34,6 @@ command: "dry-run": {
 	}
 }
 
-flux_path: "cluster/"
-
 command: bootstrap: {
 	owner: exec.Run & {
 		cmd:    "gh repo view --json owner --jq .owner.login"
@@ -44,7 +44,7 @@ command: bootstrap: {
 		stdout: string
 	}
 	flux: exec.Run & {
-		cmd:    "flux bootstrap github --owner \(owner) --repository \(repo) --path \(flux_path)"
+		cmd:    "flux bootstrap github --owner \(owner.stdout) --repository \(repo.stdout) --path \(flux_path)"
 		stdout: string
 	}
 }
@@ -63,5 +63,17 @@ command: install: {
 	install_controller: exec.Run & {
 		$after: install_crds
 		cmd:    "curl -sL -o \(install_path)/controller.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.deployment.yaml"
+	}
+	add: exec.Run & {
+		$after: install_controller
+		cmd:    "git add \(install_path)"
+	}
+	commit: exec.Run & {
+		$after: add
+		cmd:    "git commit -m '[cuelang] add cue-controller manifests'"
+	}
+	push: exec.Run & {
+		$after: commit
+		cmd:    "git push"
 	}
 }
