@@ -52,12 +52,12 @@ command: bootstrap: {
 
 command: install: {
 	install_path: "./cluster/cue-controller"
-	verify_flux:  file.Mkdir & {
+	mkdir:        file.Mkdir & {
 		path:          install_path
 		createParents: true
 	}
 	install_crds: exec.Run & {
-		$after: verify_flux
+		$after: mkdir
 		cmd:    "curl -sL -o \(install_path)/crds.yaml https://github.com/phoban01/cue-flux-controller/releases/download/\(version)/cue-controller.crds.yaml"
 	}
 	install_controller: {
