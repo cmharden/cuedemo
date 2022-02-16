@@ -8,7 +8,7 @@ import (
 	"tool/file"
 )
 
-flux_path: "cluster/"
+flux_path: "./examples/podinfo/cluster/"
 
 command: ls: {
 	task: print: cli.Print & {
