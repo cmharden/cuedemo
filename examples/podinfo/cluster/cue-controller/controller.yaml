@@ -15,6 +15,7 @@ data:
 kind: ConfigMap
 metadata:
   name: manager-config
+  namespace: flux-system
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,6 +23,7 @@ metadata:
   labels:
     app: cue-controller
   name: cue-controller
+  namespace: flux-system
 spec:
   replicas: 1
   selector:
