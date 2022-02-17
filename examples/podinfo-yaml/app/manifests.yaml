@@ -1,0 +1,52 @@
+metadata:
+  name: podinfo
+  namespace: default
+  labels:
+    app: podinfo
+kind: ServiceAccount
+apiVersion: v1
+---
+metadata:
+  name: podinfo
+  namespace: default
+  labels:
+    app: podinfo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+        - name: podinfo
+          command:
+            - ./podinfo
+            - --port=9898
+          image: ghcr.io/stefanprodan/podinfo:6.0.3
+          ports:
+            - containerPort: 9898
+      serviceAccountName: podinfo
+kind: Deployment
+apiVersion: apps/v1
+---
+metadata:
+  name: podinfo
+  namespace: default
+  labels:
+    app: podinfo
+spec:
+  ports:
+    - name: http
+      port: 9898
+      targetPort: 9898
+      protocol: TCP
+  selector:
+    app: podinfo
+  type: ClusterIP
+kind: Service
+apiVersion: v1
+
