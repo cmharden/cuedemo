@@ -9,7 +9,7 @@ spec:
   path: "./app"
   package: main
   validate:
-    kind: yaml
+    type: yaml
     mode: Audit
     schema: "#KRM"
   prune: true
