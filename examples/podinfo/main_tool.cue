@@ -8,7 +8,7 @@ import (
 	"tool/file"
 )
 
-version:      "v0.0.1-alpha.4"
+version:      "v0.0.1-alpha.5"
 manifest_url: "https://github.com/phoban01/cue-flux-controller/releases/download/\(version)"
 flux_path:    "./examples/podinfo/cluster/"
 
@@ -71,23 +71,8 @@ command: install: {
 			cmd: [ "curl", "-sL", "-o", "\(install_path)/rbac.yaml", "\(manifest_url)/cue-controller.rbac.yaml"]
 		}
 	}
-	// validate yaml before commit and push
-	diff: exec.Run & {
+	msg: cli.Print & {
 		$after: install_controller
-		cmd: ["git", "diff", "--stat", install_path]
-		stdout: *"" | string
-	}
-	if diff.stdout != "" {
-		add: exec.Run & {
-			cmd: ["git", "add", install_path]
-		}
-		commit: exec.Run & {
-			$after: add
-			cmd: ["git", "commit", "-m", "cue-controller: install \(version)"]
-		}
-		push: exec.Run & {
-			$after: commit
-			cmd: ["git", "push"]
-		}
+		text:   "Installed cue-controller \(version) into \(install_path).\nYou can now commit & push the changes to your repo. Flux will reconcile the updated manifests."
 	}
 }
