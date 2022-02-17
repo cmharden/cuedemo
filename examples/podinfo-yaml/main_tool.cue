@@ -8,7 +8,7 @@ import (
 
 version:      "v0.0.1-alpha.5"
 manifest_url: "https://github.com/phoban01/cue-flux-controller/releases/download/\(version)"
-flux_path:    "./examples/podinfo/cluster/"
+flux_path:    "./examples/podinfo-yaml/cluster/"
 
 command: bootstrap: {
 	owner: exec.Run & {
@@ -20,8 +20,7 @@ command: bootstrap: {
 		stdout: string
 	}
 	flux: exec.Run & {
-		cmd:    "flux bootstrap github --owner \(owner.stdout) --repository \(repo.stdout) --path \(flux_path)"
-		stdout: string
+		cmd: "flux bootstrap github --owner \(owner.stdout) --repository \(repo.stdout) --path \(flux_path)"
 	}
 }
 

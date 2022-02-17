@@ -46,8 +46,7 @@ command: bootstrap: {
 		stdout: string
 	}
 	flux: exec.Run & {
-		cmd:    "flux bootstrap github --owner \(owner.stdout) --repository \(repo.stdout) --path \(flux_path)"
-		stdout: string
+		cmd: "flux bootstrap github --owner \(owner.stdout) --repository \(repo.stdout) --path \(flux_path)"
 	}
 }
 
